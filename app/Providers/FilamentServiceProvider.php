@@ -9,6 +9,7 @@ use Filament\Navigation\UserMenuItem;
 use Illuminate\Support\ServiceProvider;
 use App\Filament\Resources\RoleResource;
 use App\Filament\Resources\UserResource;
+use App\Filament\Resources\QueryResource;
 use App\Filament\Resources\PermissionResource;
 
 class FilamentServiceProvider extends ServiceProvider
@@ -51,10 +52,26 @@ class FilamentServiceProvider extends ServiceProvider
                         ->url(PermissionResource::getUrl())
                         ->icon('heroicon-s-key'),
                     ]);
+                }
+                    else
+                    {
+                        Filament::registerUserMenuItems([
+                            UserMenuItem::make()
+                            ->label('Manage User')
+                            ->url(QueryResource::getUrl())
+                            ->icon('heroicon-s-user'),
+
+                        ]);
+                        // Filament::registerNavigationItems([
+                        //     UserMenuItem::make()
+                        //     ->label('Manage')
+                        // ]);
+                    }
+
 
 
             }
-        }
+
     );
 
 

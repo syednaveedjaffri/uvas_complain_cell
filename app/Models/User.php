@@ -32,8 +32,7 @@ class User extends Authenticatable implements HasName ,FilamentUser
         'is_admin',
         'email',
         'password',
-        // 'designation',
-        'ip_address','campus_id'
+
 
 
     ];
@@ -82,9 +81,9 @@ class User extends Authenticatable implements HasName ,FilamentUser
 
             // return "{$this->first_name} {$this->last_name}";
         }
-    public function queries()
+    public function userprofile()
     {
-        return $this->hasMany(Query::class);
+        return $this->hasOne(Userprofile::class);
     }
     // public function camp()
     // {

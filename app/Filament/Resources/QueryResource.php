@@ -58,7 +58,7 @@ class QueryResource extends Resource
                     ->schema
                     ([
 
-                        TextInput::make('complainer_name')->required(),
+//                        TextInput::make('complainer_name')->required(),
 
                         Select::make('campus_id')->label('Campus Name')->placeholder('Select a Campus')
                             ->preload()
@@ -122,7 +122,7 @@ class QueryResource extends Resource
                         // Select::make('complain_id')
                         //     ->relationship('complain', 'complain_type')->required(),
 
-                                    TextInput::make('complain_description'),
+                                    TextInput::make('complain_statement'),
 
 
                             TextInput::make('extension'),
@@ -131,48 +131,48 @@ class QueryResource extends Resource
                             ->options([
 
                                 'inprocess' => 'In Process',
-                                'repaired' => 'Repaired',
+                                // 'repaired' => 'Repaired',
                                 'deleivered' => 'Deleivered',
-                                'pending' => 'Send To Vendor',
-                                'received' => 'Received from vendor',
-                                'dead'=>'Dead'
+                                // 'pending' => 'Send To Vendor',
+                                // 'received' => 'Received from vendor',
+                                'completed'=>'Completed'
                             ])->required()
 
                             // ->disablePlaceholderSelection()
 
 
-                            ->hidden(fn() => !auth()->user()->hasRole('admin'))
+                            ->hidden(fn() => auth()->user()->hasRole('user'))
                             ->reactive(),
 
 
-                           select::make('vendor_id')
-                           ->relationship('vendor','company_name')
-                           ->preload()
-                           ->autofocus()
-                           ->label('Vendor')
-                        //    ->reactive()
-                           ->requiredWith('status')
-                               ->visible(fn(Closure $get) => $get('status') == 'pending'),
+                        //    select::make('vendor_id')
+                        //    ->relationship('vendor','company_name')
+                        //    ->preload()
+                        //    ->autofocus()
+                        //    ->label('Vendor')
+                        // //    ->reactive()
+                        //    ->requiredWith('status')
+                        //        ->visible(fn(Closure $get) => $get('status') == 'pending'),
 
-                            DateTimePicker::make('send_to_vendor')
+                        //     DateTimePicker::make('send_to_vendor')
 
-                               ->label('Send to Vendor Date')
-                               ->minDate(now())
-                               ->maxDate(Carbon::now()->addDays(31))
-                               ->requiredWith('status')
-                               ->visible(fn(Closure $get) => $get('status') == 'pending')
+                        //        ->label('Send to Vendor Date')
+                        //        ->minDate(now())
+                        //        ->maxDate(Carbon::now()->addDays(31))
+                        //        ->requiredWith('status')
+                        //        ->visible(fn(Closure $get) => $get('status') == 'pending')
 
-                               ->hidden(fn() => !auth()->user()->hasRole('admin')),
+                        //        ->hidden(fn() => !auth()->user()->hasRole('admin')),
 
-                               DateTimePicker::make('received_from_vendor')
+                        //        DateTimePicker::make('received_from_vendor')
 
-                               ->label('Received From Vendor Date')
-                               ->minDate(now())
-                               ->maxDate(Carbon::now()->addDays(31))
-                               ->requiredWith('status')
-                               ->visible(fn(Closure $get) => $get('status') == 'received')
+                        //        ->label('Received From Vendor Date')
+                        //        ->minDate(now())
+                        //        ->maxDate(Carbon::now()->addDays(31))
+                        //        ->requiredWith('status')
+                        //        ->visible(fn(Closure $get) => $get('status') == 'received')
 
-                               ->hidden(fn() => !auth()->user()->hasRole('admin')),
+                        //        ->hidden(fn() => !auth()->user()->hasRole('admin')),
 
                             DateTimePicker::make('send_to_dept')
 
@@ -182,7 +182,7 @@ class QueryResource extends Resource
                             ->requiredWith('status')
                                ->visible(fn(Closure $get) => $get('status') == 'deleivered')
 
-                            ->hidden(fn() => !auth()->user()->hasRole('admin')),
+                            ->hidden(fn() => auth()->user()->hasRole('user')),
 
                             // ->disabledDates(['2022-10-02', '2022-10-05', '2022-10-15'])
 
@@ -203,43 +203,43 @@ class QueryResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('complainer_name')->label('Complainer Name'),
-
+//                TextColumn::make('complainer_name')->label('Complainer Name'),
+                TextColumn::make('userprofiles.name')->label('Complainer Name'),
                 // ->toggleable(), OK HAE
                 TextColumn::make('faculty.faculty_name')->searchable()->sortable(),
                 TextColumn::make('department.department_name')->searchable()->sortable(),
                 TextColumn::make('complaincategoryname.complain_category_name')->label('Category Name')->searchable()->sortable(),
                 TextColumn::make('complaincategorytype.complain_category_type')->label('Category Type')->searchable()->sortable(),
                 // TextColumn::make('complain.complain_type')->searchable()->sortable(),
-                TextColumn::make('complain_description')->label('Further Description About Complain'),
-                TextColumn::make('extension')->label('Extension')->sortable(),
+                TextColumn::make('complain_statement')->label('Description About Complain'),
+                // TextColumn::make('extension')->label('Extension')->sortable(),
 
 
                 TextColumn::make('created_at')->dateTime()->searchable()->sortable()->label('Complain Date'),
                 TextColumn::make('send_to_dept')->dateTime()->searchable()->sortable()->label('Send to Department Date')
-                ->hidden(fn() => !auth()->user()->hasRole('admin')),
-                TextColumn::make('send_to_vendor')->dateTime()->searchable()->sortable()->label('Send to Vendor Date')
-                ->hidden(fn() => !auth()->user()->hasRole('admin')),
-                TextColumn::make('received_from_vendor')->dateTime()->searchable()->sortable()->label('Received from Vendor Date')
-                ->hidden(fn() => !auth()->user()->hasRole('admin')),
+                ->hidden(fn() => auth()->user()->hasRole('user')),
+                // TextColumn::make('send_to_vendor')->dateTime()->searchable()->sortable()->label('Send to Vendor Date')
+                // ->hidden(fn() => !auth()->user()->hasRole('admin')),
+                // TextColumn::make('received_from_vendor')->dateTime()->searchable()->sortable()->label('Received from Vendor Date')
+                // ->hidden(fn() => !auth()->user()->hasRole('admin')),
 
 
                     BadgeColumn::make('status')
                     ->colors([
 
-                        'secondary' => 'repaired',
+                        // 'secondary' => 'repaired',
                         'warning' => 'inprocess',
-                        'success' => 'deleivered',
-                        'danger' => 'send_to_vendor',
-                        'success' => 'received',
-                        'danger' => 'dead'
+                        'primary' => 'deleivered',
+                        // 'danger' => 'send_to_vendor',
+                        // 'success' => 'received',
+                        'sucess' => 'completed'
                     ]),
 
-                TextColumn::make('vendor.company_name')->label('Vendor Name')
-                ->searchable()
-                ->sortable()
-                ->hidden('status')
-                ->hidden(fn() => !auth()->user()->hasRole('admin')),
+                // TextColumn::make('vendor.company_name')->label('Vendor Name')
+                // ->searchable()
+                // ->sortable()
+                // ->hidden('status')
+                // ->hidden(fn() => !auth()->user()->hasRole('admin')),
 
 
 
@@ -258,24 +258,24 @@ class QueryResource extends Resource
 
                 //     return 'Created at ' . Carbon::parse($data['date'])->toFormattedDateString();
                 // }),OK HAE
-                SelectFilter::make('All Campuse')->hidden(fn() => !auth()->user()->hasRole('admin'))
+                SelectFilter::make('All Campuse')->hidden(fn() => auth()->user()->hasRole('user'))
                     ->relationship('campus', 'campus_name'),
-                SelectFilter::make('All Faculties')->hidden(fn() => !auth()->user()->hasRole('admin'))
+                SelectFilter::make('All Faculties')->hidden(fn() => auth()->user()->hasRole('user'))
                     ->relationship('faculty', 'faculty_name'),
-                SelectFilter::make('All Departments')->hidden(fn() => !auth()->user()->hasRole('admin'))
+                SelectFilter::make('All Departments')->hidden(fn() => auth()->user()->hasRole('user'))
                     ->relationship('department', 'department_name'),
                     SelectFilter::make('All Complain Categories')
-                    ->hidden(fn() => !auth()->user()->hasRole('admin'))
+                    ->hidden(fn() => auth()->user()->hasRole('user'))
                     ->relationship('complaincategoryname', 'complain_category_name'),
 
                 SelectFilter::make('status')
-                ->hidden(fn() => !auth()->user()->hasRole('admin'))
+                ->hidden(fn() => auth()->user()->hasRole('user'))
                 ->options([
 
                     'inprocess' => 'In Process',
-                    'repaired' => 'Repaired',
+                    // 'repaired' => 'Repaired',
                     'deleivered' => 'Deleivered',
-                    'send_to_vendor' => 'Send To Vendor'
+                    'completed' => 'Completed'
 
                 ])
 
@@ -377,15 +377,30 @@ class QueryResource extends Resource
 
 
 
-    public static function getNavigationBadge(): ?string
-    {
-        /*dd(self::getModel()::where('user_id', auth()->user()->id)->count());*/
-        if (auth()->id() === 1 || auth()->id() ===2){
-            return self::getModel()::count();
-        } else {
-            return self::getModel()::where('user_id', auth()->user()->id)->count();
-        }
-    }
+public static function getNavigationBadge(): ?string
+{
+
+        $user = auth()->user();
+        $roles = $user->roles;
+        foreach ($roles as $role)
+            {
+                $roleName = $role->name;
+
+                    if ($roleName === "admin")
+                    {
+                        return self::getModel()::count();
+                    } else {
+                        return self::getModel()::where('user_id', auth()->user()->id)->count();
+                    }
+
+            }
+
+//     protected function getTableFiltersLayout(): ?string
+// {
+//     return Layout::BelowContent;
+// }
+    return null;
+}
 
 //     protected function getTableFiltersLayout(): ?string
 // {

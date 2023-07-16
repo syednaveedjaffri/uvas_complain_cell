@@ -11,7 +11,10 @@ class Query extends Model
     use HasFactory;
     use SoftDeletes;
     protected $fillable = ['
-    id','campus_id','complainer_name','faculty_id','received_from_vendor','department_id','user_id','status','vendor_id','send_to_vendor','send_to_dept','complain_type','complaincategory_id','complaincategorytype_id','complain_description','extension'];
+    id','campus_id','faculty_id',
+    'department_id','user_id','status','vendor_id','userprofile_id',
+    'send_to_dept',
+    'complain_type','complaincategory_id','complaincategorytype_id','complain_statement'];
     // protected $hidden = ['status'];
     // protected $fillable=['
     // id','campus_id','user_id','faculty_id','department_id','vendor_id','complain_id'];
@@ -27,6 +30,10 @@ class Query extends Model
     public function user()
         {
             return $this->belongsTo(User::class);
+        }
+        public function userprofilequeries()
+        {
+            return $this->belongsTo(Userprofile::class,'userprofile_id','id');
         }
     // public function complain()
     //     {
